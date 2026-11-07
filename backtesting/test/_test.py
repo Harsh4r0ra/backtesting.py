@@ -300,6 +300,12 @@ class TestBacktest(TestCase):
             stats['Equity Final [$]'],
             CASH + (PRICE_EXIT - PRICE_ENTRY) * SIZE - EXPECTED_PAID_COMMISSION)
 
+    def test_tz_aware_index_warns(self):
+        df = GOOG.copy()
+        df.index = df.index.tz_localize('Asia/Shanghai')
+        with self.assertWarnsRegex(UserWarning, 'timezone-aware'):
+            Backtest(df, SmaCross).run()
+
     def test_dont_overwrite_data(self):
         df = EURUSD.copy()
         bt = Backtest(df, SmaCross)

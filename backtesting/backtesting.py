@@ -1265,6 +1265,14 @@ class Backtest:
             warnings.warn('Data index is not datetime. Assuming simple periods, '
                           'but `pd.DateTimeIndex` is advised.',
                           stacklevel=2)
+        elif data.index.tz is not None:
+            warnings.warn('Data index is timezone-aware. Consider using '
+                          '`df.index = df.index.tz_convert(None)` (i.e. naive, '
+                          'tz-less, local-time index) to avoid pandas `resample()` '
+                          'and similar day/week/month-boundary operations '
+                          'silently assuming UTC and shifting your data in time. '
+                          'See https://github.com/kernc/backtesting.py/issues/1002',
+                          stacklevel=2)
 
         self._data: pd.DataFrame = data
         self._broker = partial(
